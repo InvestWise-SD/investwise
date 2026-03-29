@@ -11,6 +11,7 @@ supabase==2.3.4
 # AI Services
 anthropic==0.18.1
 groq==0.4.2
+httpx==0.24.1
 
 # Auth & Security
 python-jose[cryptography]==3.3.0
