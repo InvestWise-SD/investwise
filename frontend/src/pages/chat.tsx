@@ -28,13 +28,32 @@ export default function ChatPage({ user, loading }: ChatPageProps) {
   }, [user, loading, router])
 
   useEffect(() => {
-    // Get session token
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Get session token from Supabase
+    const getToken = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
       if (session?.access_token) {
         setToken(session.access_token)
+        console.log('Token retrieved successfully')
+      } else {
+        console.log('No session found')
       }
-    })
-  }, [user])
+    }
+    
+    getToken()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session?.access_token) {
+          setToken(session.access_token)
+        } else {
+          setToken(null)
+        }
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   const { messages, isLoading, suggestions, sendMessage, clearChat } = useChat({
     token,
