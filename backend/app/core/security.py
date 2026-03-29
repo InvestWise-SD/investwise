@@ -1,13 +1,10 @@
 """
-Security utilities for authentication and authorization.
+Security utilities for authentication with Supabase.
 """
-
-from datetime import datetime, timedelta
-from typing import Optional
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import JWTError, jwt
+import httpx
 
 from app.core.config import get_settings
 
@@ -15,30 +12,32 @@ settings = get_settings()
 security = HTTPBearer()
 
 
-def create_access_token(
-    data: dict, 
-    expires_delta: Optional[timedelta] = None
-) -> str:
-    """Create a JWT access token."""
-    to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(days=7))
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, settings.secret_key, algorithm="HS256")
-
-
-def verify_token(token: str) -> dict:
-    """Verify and decode a JWT token."""
+async def verify_supabase_token(token: str) -> dict:
+    """Verify a Supabase JWT token by calling Supabase Auth API."""
     try:
-        payload = jwt.decode(
-            token, 
-            settings.secret_key, 
-            algorithms=["HS256"]
-        )
-        return payload
-    except JWTError:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{settings.supabase_url}/auth/v1/user",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "apikey": settings.supabase_key
+                },
+                timeout=10.0
+            )
+            
+            if response.status_code == 200:
+                user_data = response.json()
+                return {"sub": user_data["id"], "email": user_data.get("email")}
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid authentication token",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+    except httpx.RequestError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication token",
+            detail=f"Could not verify token: {str(e)}",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -46,5 +45,5 @@ def verify_token(token: str) -> dict:
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ) -> dict:
-    """Dependency to get current authenticated user."""
-    return verify_token(credentials.credentials)
+    """Dependency to get current authenticated user from Supabase token."""
+    return await verify_supabase_token(credentials.credentials)
