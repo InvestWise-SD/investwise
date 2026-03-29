@@ -1,5 +1,4 @@
 export {
-  RiskQuestionCard,
   RiskAssessmentQuiz,
   RiskProfileResult,
   RiskAssessmentIntro,
