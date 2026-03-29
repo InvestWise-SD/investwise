@@ -1,5 +1,5 @@
 export {
-  RiskAssessmentQuiz,
+  RiskQuiz,
   RiskProfileResult,
-  RiskAssessmentIntro,
+  RiskAssessmentStart,
 } from './RiskComponents'
