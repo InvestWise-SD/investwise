@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Base styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 antialiased;
+    min-height: 100vh;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 
+           bg-primary-600 text-white font-medium rounded-xl
+           hover:bg-primary-700 active:bg-primary-800
+           transition-all duration-200 ease-out
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3
+           bg-white text-slate-700 font-medium rounded-xl
+           border border-slate-200
+           hover:bg-slate-50 hover:border-slate-300
+           transition-all duration-200 ease-out
+           focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2;
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-slate-200/50
+           p-6 transition-shadow duration-200
+           hover:shadow-md;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-xl
+           text-slate-900 placeholder:text-slate-400
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+           transition-all duration-200;
+  }
+  
+  .chat-bubble-user {
+    @apply bg-primary-600 text-white rounded-2xl rounded-br-md px-4 py-3;
+  }
+  
+  .chat-bubble-assistant {
+    @apply bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-bl-md px-4 py-3;
+  }
+  
+  .jargon-tooltip {
+    @apply relative cursor-help border-b border-dashed border-primary-400;
+  }
+  
+  .progress-bar {
+    @apply h-2 bg-slate-200 rounded-full overflow-hidden;
+  }
+  
+  .progress-bar-fill {
+    @apply h-full bg-gradient-to-r from-primary-500 to-primary-400 rounded-full
+           transition-all duration-500 ease-out;
+  }
+}
+
+/* Animations */
+@layer utilities {
+  .animate-in {
+    animation: animateIn 0.3s ease-out forwards;
+  }
+  
+  @keyframes animateIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .typing-indicator span {
+    animation: blink 1.4s infinite both;
+  }
+  
+  .typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes blink {
+    0%, 60%, 100% {
+      opacity: 0.3;
+    }
+    30% {
+      opacity: 1;
+    }
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
