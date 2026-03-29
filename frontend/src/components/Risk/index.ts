@@ -1,1 +1,6 @@
-export { RiskQuiz, RiskProfile, RiskIntro } from './RiskComponents'
+export {
+  RiskQuestionCard,
+  RiskAssessmentQuiz,
+  RiskProfileResult,
+  RiskAssessmentIntro,
+} from './RiskComponents'
